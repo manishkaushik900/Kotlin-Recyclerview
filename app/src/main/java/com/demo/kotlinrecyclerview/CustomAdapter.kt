@@ -13,21 +13,23 @@ class CustomAdapter(private val dataset: List<User>) :
     RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        val textViewUsername: TextView
-        val textViewAddress: TextView
-        val cardView: CardView
+       private val textViewUsername: TextView = view.findViewById(R.id.textViewUsername)
+        private val textViewAddress: TextView= view.findViewById(R.id.textViewAddress)
+        private val cardView: CardView= view.findViewById(R.id.cardView)
 
-        init {
-            textViewUsername = view.findViewById(R.id.textViewUsername)
-            textViewAddress = view.findViewById(R.id.textViewAddress)
-            cardView = view.findViewById(R.id.cardView)
+        companion object {
+            fun create(parent: ViewGroup): ViewHolder {
+                val view: View = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.row_item, parent, false)
+                return ViewHolder(view)
+            }
         }
 
-        fun bind(user: User) {
-            textViewUsername.setText(user.name)
-            textViewAddress.setText(user.address)
+        fun bind(user: User?) {
+            textViewUsername.text = user?.name
+            textViewAddress.text = user?.address
             cardView.setOnClickListener {
-                Toast.makeText(it.context, "You Clicked ${user.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(it.context, "You Clicked ${user?.name}", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -36,19 +38,11 @@ class CustomAdapter(private val dataset: List<User>) :
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
 
-        val view =
-            LayoutInflater.from(viewGroup.context).inflate(R.layout.row_item, viewGroup, false)
-
-        return ViewHolder(view)
+        return ViewHolder.create(viewGroup)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(dataset.get(position))
-//        holder.textViewUsername.setText(dataset.get(position).name)
-//        holder.textViewAddress.setText(dataset.get(position).address)
-//        holder.cardView.setOnClickListener{
-//            Toast.makeText(it.context,"You Clicked ${dataset.get(position).name}", Toast.LENGTH_SHORT).show()
-//        }
     }
 
     override fun getItemCount() = dataset.size
